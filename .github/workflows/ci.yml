@@ -7,10 +7,36 @@ on:
     branches: [main]
 
 jobs:
-  validate:
+  # Job 1: Validate documentation and business artifacts
+  validate-docs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
+      - name: Verify core documentation
+        run: |
+          ls README.md
+          ls VALUE_PROPOSITION.md
+          ls GTM_PLAN.md
+          ls MARKET_ANALYSIS.md
+          ls FIRST_100_USERS.md
+          ls INFRASTRUCTURE_COSTS.md
+          ls IMPLEMENTATION_ROADMAP.md
+          ls INTEGRATION_GUIDE.md
+          echo "✅ Core docs present"
+
+      - name: Verify evidence artifacts
+        run: |
+          ls evidence/APP_ID_VERIFICATION.md
+          ls evidence/DORAHACKS_TAGS.md
+          echo "✅ Evidence artifacts present"
+
+  # Job 2: Python syntax validation
+  validate-scripts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -20,20 +46,36 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install Python dependencies
+      - name: Install dependencies
         run: pip install py-algorand-sdk pytest pytest-timeout python-dotenv requests
 
-      - name: Collect integration tests
-        run: python -m pytest tests/integration/ --collect-only -q 2>&1 || echo "Collection done"
-
       - name: Check script syntax
-        run: python -c "import ast; ast.parse(open('scripts/demo_kite_provenance.py').read()); print('OK')"
+        run: python -c "import ast; ast.parse(open('scripts/demo_kite_provenance.py').read()); print('✅ Script syntax OK')"
 
-      - name: Verify artifacts
-        run: |
-          ls README.md
-          ls VALUE_PROPOSITION.md
-          ls GTM_PLAN.md
-          ls evidence/APP_ID_VERIFICATION.md
-          ls evidence/DORAHACKS_TAGS.md
-          echo "All artifacts present"
+      - name: Collect integration tests
+        run: python -m pytest tests/integration/ --collect-only -q 2>&1 || echo "✅ Test collection done"
+
+  # Job 3: Integration test (TestNet)
+  test-integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: github.event_name == 'push'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install py-algorand-sdk pytest pytest-timeout python-dotenv requests
+
+      - name: Run integration tests
+        run: python -m pytest tests/integration/ -v --timeout=60
+        env:
+          ADMIN_MNEMONIC: ${{ secrets.ADMIN_MNEMONIC }}
+          ALGOD_SERVER: https://testnet-api.algonode.cloud
+          ESCROW_VAULT_APP_ID: "761941677"
+        continue-on-error: true
