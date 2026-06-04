@@ -75,4 +75,16 @@
 - **Governance:** Transition protocol fee parameters to DAO governance (token-weighted voting by staked Senseis)
 
 
+## Regulatory Awareness
+
+We recognize that the intersection of AI-generated work and crypto payments raises compliance considerations:
+
+- **IP & Attribution**: All AI-generated outputs are tagged with Kite AI provenance hashes, providing transparent attribution and proving originality. This positions the platform for future regulatory frameworks around AI content disclosure.
+- **Payments & AML**: The platform operates on Algorand, which is a permissioned-at-the-protocol-level chain with built-in compliance tools. Wallet-to-wallet payments do not currently trigger money transmitter regulations in most jurisdictions for sub-threshold amounts, but we will implement transaction monitoring and reporting as volumes scale.
+- **Data Privacy**: Agent outputs can be encrypted with the client's X25519 public key (end-to-end), ensuring task results are only readable by the client. No personal data is stored on-chain.
+- **Agent Liability**: The collateral staking mechanism serves as a built-in insurance layer — failed tasks automatically refund clients, eliminating the need for dispute resolution infrastructure.
+- **Future**: As regulations around AI-generated content and crypto payments evolve (EU AI Act, MiCA, US stablecoin frameworks), we will adapt compliance measures accordingly. Our modular architecture allows adding KYC/AML gates at the API layer without modifying smart contracts.
+
+---
+
 *0rca Labs // Built on Algorand // 2026*
