@@ -1,0 +1,77 @@
+{
+    "$schema": "https://opencode.ai/config.json",
+    "plugin": [
+        "opencode-antigravity-auth@beta"
+    ],
+    "provider": {
+        "ollama": {
+            "npm": "@ai-sdk/openai-compatible",
+            "name": "Ollama (local)",
+            "options": {
+                "baseURL": "http://localhost:11434/v1"
+            },
+            "models": {
+                "gpt-oss:20b": {
+                    "name": "gpt-oss:20b"
+                },
+                "deepseek-coder-v2:16b": {
+                    "name": "deepseek-coder-v2:16b"
+                },
+                "gpt-14k:latest": {
+                    "name": "gpt-14k"
+                },
+                "dsc-14k:latest": {
+                    "name": "deepseek-coder-v2-14k context"
+                },
+                "dsc-20k:latest": {
+                    "name": "deepseek-coder-v2-20k context"
+                },
+                "dsc-8k:latest": {
+                    "name": "deepseek-coder-v2-8k context"
+                }
+            }
+        },
+        "nvidia": {
+            "models": {
+                "moonshotai/kimi-k2.6": {
+                    "limit": {
+                        "context": 256000,
+                        "output": 8192
+                    }
+                },
+                "z-ai/glm-5.1": {
+                    "limit": {
+                        "context": 200000,
+                        "output": 8192
+                    }
+                },
+                "minimaxai/minimax-m2.7": {
+                    "limit": {
+                        "context": 200000,
+                        "output": 8192
+                    }
+                }
+            }
+        }
+    },
+    "mcp": {
+        "kapa": {
+            "type": "remote",
+            "url": "https://algorand-docs.mcp.kapa.ai/",
+            "enabled": true
+        },
+        "avalanche-docs": {
+            "type": "remote",
+            "url": "https://build.avax.network/api/mcp",
+            "enabled": true
+        },
+        "github": {
+            "type": "remote",
+            "url": "https://api.githubcopilot.com/mcp/",
+            "enabled": true,
+            "headers": {
+                "Authorization": "Bearer {env:GITHUB_TOKEN}"
+            }
+        }
+    }
+}
