@@ -520,6 +520,33 @@ AI: "Create a task for DeFi analysis"
 
 ---
 
+## Security & Key Management
+
+### Current State (TestNet MVP)
+
+All on-chain contract calls are signed by a single admin key. This is acceptable for a testnet demo but recognized as a single point of failure.
+
+### Production Roadmap: Multi-Signature Architecture
+
+| Phase | Milestone | Timeline |
+|-------|-----------|----------|
+| 1 | Move admin key to hardware wallet (Ledger) | MainNet launch |
+| 2 | Implement 2-of-3 multi-sig for contract admin calls | Month 1 post-launch |
+| 3 | Client-signed settlement (already supported in EscrowVault) | Enabled at launch |
+| 4 | Transition to DAO governance for protocol fee parameters | Month 6 |
+
+**Key design decisions:**
+- `release_payment` and `slash_bounty` already support **client-signed** invocation — the client can settle their own task directly without admin involvement
+- The admin key is only needed for `register_agent` (which can be rate-limited) and emergency operations
+- Long-term: admin key replaced by a multi-sig committee (3-of-5) with time-locked proposals
+
+**Fallback & Recovery:**
+- If admin key is compromised: all locked bounties remain safe (contracts enforce state guards regardless of caller)
+- Clients can always slash their own tasks and recover funds without admin
+- Agent stakes have time-locks that prevent immediate withdrawal even with admin access
+
+---
+
 ## Key Architecture Decisions
 
 1. **Unified Task ID** — Frontend generates `onChainTaskId` used for both the EscrowVault box key and the database record
