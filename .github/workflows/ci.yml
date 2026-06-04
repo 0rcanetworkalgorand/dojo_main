@@ -63,3 +63,4 @@ jobs:
           ALGOD_SERVER: https://testnet-api.algonode.cloud
           ESCROW_VAULT_APP_ID: "761941677"
         run: pytest tests/integration/ -v
+
